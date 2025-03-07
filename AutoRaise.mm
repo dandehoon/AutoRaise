@@ -400,8 +400,9 @@ AXUIElementRef get_mousewindow(CGPoint point) {
         // no fallback, happens when hovering over the menubar itself
         if (verbose) { NSLog(@"Copy element: failure"); }
     } else if (error == kAXErrorIllegalArgument) {
-        // no fallback, happens in (Open, Save) dialogs
+        // fallback, happens in (Open, Save) dialogs but we want to raise PWAs
         if (verbose) { NSLog(@"Copy element: illegal argument"); }
+        _window = fallback(point);
     } else if (verbose) {
         NSLog(@"Copy element: AXError %d", error);
     }
@@ -601,7 +602,10 @@ inline bool is_main_window(AXUIElementRef _app, AXUIElementRef _window, bool chr
 
 inline bool is_chrome_app(NSString * bundleIdentifier) {
     NSArray * components = [bundleIdentifier componentsSeparatedByString: @"."];
-    return components.count > 4 && [components[2] isEqual: @"Chrome"] && [components[3] isEqual: @"app"];
+    NSArray *chromiumBrowsers = @[@"Chrome", @"Vivaldi", @"Edge", @"Brave", @"Chromium"];
+    return components.count > 4 &&
+           [chromiumBrowsers containsObject:components[2]] &&
+           [components[3] isEqual: @"app"];
 }
 
 //-----------------------------------------------notifications----------------------------------------------
