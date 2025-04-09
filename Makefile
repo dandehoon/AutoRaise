@@ -22,3 +22,11 @@ AutoRaise: AutoRaise.mm
 
 AutoRaise.app: AutoRaise Info.plist AutoRaise.icns
 	./create-app-bundle.sh
+
+build:
+	make CXXFLAGS="-DEXPERIMENTAL_FOCUS_FIRST"
+
+run: build
+	./AutoRaise
+
+update: build install
